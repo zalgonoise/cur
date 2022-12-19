@@ -222,4 +222,52 @@ func TestCursor(t *testing.T) {
 			}
 		})
 	})
+	t.Run("Extract", func(t *testing.T) {
+		t.Run("Success", func(t *testing.T) {
+			v := c.Extract(5, 8)
+			if len(v) != 4 {
+				t.Errorf("unexpected slice length")
+			}
+			if v[0] != input[5] {
+				t.Errorf("unexpected value: wanted %d ; got %d", input[5], v[0])
+			}
+			if v[1] != input[6] {
+				t.Errorf("unexpected value: wanted %d ; got %d", input[6], v[1])
+			}
+			if v[2] != input[7] {
+				t.Errorf("unexpected value: wanted %d ; got %d", input[7], v[2])
+			}
+			if v[3] != input[8] {
+				t.Errorf("unexpected value: wanted %d ; got %d", input[8], v[3])
+			}
+		})
+
+		t.Run("HitTail", func(t *testing.T) {
+			v := c.Extract(9, 15)
+			if len(v) != 2 {
+				t.Errorf("unexpected slice length")
+			}
+			if v[0] != input[9] {
+				t.Errorf("unexpected value: wanted %d ; got %d", input[9], v[0])
+			}
+			if v[1] != input[10] {
+				t.Errorf("unexpected value: wanted %d ; got %d", input[10], v[1])
+			}
+		})
+		t.Run("HitHead", func(t *testing.T) {
+			v := c.Extract(-3, 2)
+			if len(v) != 3 {
+				t.Errorf("unexpected slice length")
+			}
+			if v[0] != input[0] {
+				t.Errorf("unexpected value: wanted %d ; got %d", input[0], v[0])
+			}
+			if v[1] != input[1] {
+				t.Errorf("unexpected value: wanted %d ; got %d", input[1], v[1])
+			}
+			if v[2] != input[2] {
+				t.Errorf("unexpected value: wanted %d ; got %d", input[2], v[2])
+			}
+		})
+	})
 }

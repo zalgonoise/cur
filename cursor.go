@@ -40,6 +40,8 @@ type Cursor[T any] interface {
 	// PeekOffset returns the next indexed item without advancing the cursor,
 	// with offset `amount`
 	PeekOffset(amount int) T
+	// Extract returns a slice from index `start` to index `end`
+	Extract(start, end int) []T
 }
 
 type cursor[T any] struct {
@@ -166,4 +168,15 @@ func (c *cursor[T]) PeekOffset(amount int) T {
 		return c.slice[len(c.slice)-1]
 	}
 	return c.slice[c.idx+amount]
+}
+
+// Extract returns a slice from index `start` to index `end`
+func (c *cursor[T]) Extract(start, end int) []T {
+	if start < 0 {
+		start = 0
+	}
+	if end > len(c.slice)-1 {
+		end = len(c.slice) - 1
+	}
+	return c.slice[start : end+1]
 }

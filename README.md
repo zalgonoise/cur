@@ -51,6 +51,8 @@ type Cursor[T any] interface {
 	// PeekOffset returns the next indexed item without advancing the cursor,
 	// with offset `amount`
 	PeekOffset(amount int) T
+	// Extract returns a slice from index `start` to index `end`
+	Extract(start, end int) []T
 }
 ```
 
