@@ -47,9 +47,18 @@ func TestCursor(t *testing.T) {
 	})
 	t.Run("Peek", func(t *testing.T) {
 		v := c.Peek()
+		w := c.PeekOffset(1)
+		x := c.PeekOffset(0)
 		cur := c.Cur()
+
 		if v != input[2] {
 			t.Errorf("unexpected value: wanted %d ; got %d", input[2], v)
+		}
+		if w != v {
+			t.Error("ambiguous")
+		}
+		if x != cur {
+			t.Error("ambiguous")
 		}
 		if cur != input[1] {
 			t.Errorf("unexpected value: wanted %d ; got %d", input[1], v)
