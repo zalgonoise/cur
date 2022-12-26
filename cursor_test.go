@@ -2,6 +2,7 @@ package codegraph
 
 import "testing"
 
+var eof = 0
 var input = []int{
 	1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 101,
 }
@@ -38,8 +39,8 @@ func TestCursor(t *testing.T) {
 		}
 		t.Run("HitHead", func(t *testing.T) {
 			v := c.Prev()
-			if v != input[0] {
-				t.Errorf("unexpected value: wanted %d ; got %d", input[0], v)
+			if v != eof {
+				t.Errorf("unexpected value: wanted %d ; got %d", eof, v)
 			}
 		})
 		// advance to idx 1
@@ -67,7 +68,7 @@ func TestCursor(t *testing.T) {
 			c.Idx(10)
 			v := c.Peek()
 			cur := c.Cur()
-			if v != input[10] {
+			if v != eof {
 				t.Errorf("unexpected value: wanted %d ; got %d", input[10], v)
 			}
 			if cur != input[10] {
@@ -90,7 +91,7 @@ func TestCursor(t *testing.T) {
 		t.Run("HitHead", func(t *testing.T) {
 			v := c.PeekIdx(-10)
 			cur := c.Cur()
-			if v != input[0] {
+			if v != eof {
 				t.Errorf("unexpected value: wanted %d ; got %d", input[0], v)
 			}
 			if cur != input[2] {
@@ -100,7 +101,7 @@ func TestCursor(t *testing.T) {
 		t.Run("HitTail", func(t *testing.T) {
 			v := c.PeekIdx(20)
 			cur := c.Cur()
-			if v != input[10] {
+			if v != eof {
 				t.Errorf("unexpected value: wanted %d ; got %d", input[10], v)
 			}
 			if cur != input[2] {
@@ -133,7 +134,7 @@ func TestCursor(t *testing.T) {
 		t.Run("HitHead", func(t *testing.T) {
 			v := c.PeekOffset(-10)
 			cur := c.Cur()
-			if v != input[0] {
+			if v != eof {
 				t.Errorf("unexpected value: wanted %d ; got %d", input[0], v)
 			}
 			if cur != input[2] {
@@ -143,7 +144,7 @@ func TestCursor(t *testing.T) {
 		t.Run("HitTail", func(t *testing.T) {
 			v := c.PeekOffset(20)
 			cur := c.Cur()
-			if v != input[10] {
+			if v != eof {
 				t.Errorf("unexpected value: wanted %d ; got %d", input[10], v)
 			}
 			if cur != input[2] {
@@ -183,13 +184,13 @@ func TestCursor(t *testing.T) {
 
 		t.Run("HitTail", func(t *testing.T) {
 			v := c.Idx(20)
-			if v != input[10] {
+			if v != eof {
 				t.Errorf("unexpected value: wanted %d ; got %d", input[10], v)
 			}
 		})
 		t.Run("HitHead", func(t *testing.T) {
 			v := c.Idx(-1)
-			if v != input[0] {
+			if v != eof {
 				t.Errorf("unexpected value: wanted %d ; got %d", input[0], v)
 			}
 		})
@@ -211,13 +212,13 @@ func TestCursor(t *testing.T) {
 
 		t.Run("HitTail", func(t *testing.T) {
 			v := c.Offset(8)
-			if v != input[10] {
+			if v != eof {
 				t.Errorf("unexpected value: wanted %d ; got %d", input[10], v)
 			}
 		})
 		t.Run("HitHead", func(t *testing.T) {
 			v := c.Offset(-30)
-			if v != input[0] {
+			if v != eof {
 				t.Errorf("unexpected value: wanted %d ; got %d", input[0], v)
 			}
 		})
@@ -225,7 +226,7 @@ func TestCursor(t *testing.T) {
 	t.Run("Extract", func(t *testing.T) {
 		t.Run("Success", func(t *testing.T) {
 			v := c.Extract(5, 8)
-			if len(v) != 4 {
+			if len(v) != 3 {
 				t.Errorf("unexpected slice length")
 			}
 			if v[0] != input[5] {
@@ -236,9 +237,6 @@ func TestCursor(t *testing.T) {
 			}
 			if v[2] != input[7] {
 				t.Errorf("unexpected value: wanted %d ; got %d", input[7], v[2])
-			}
-			if v[3] != input[8] {
-				t.Errorf("unexpected value: wanted %d ; got %d", input[8], v[3])
 			}
 		})
 
@@ -256,7 +254,7 @@ func TestCursor(t *testing.T) {
 		})
 		t.Run("HitHead", func(t *testing.T) {
 			v := c.Extract(-3, 2)
-			if len(v) != 3 {
+			if len(v) != 2 {
 				t.Errorf("unexpected slice length")
 			}
 			if v[0] != input[0] {
@@ -264,9 +262,6 @@ func TestCursor(t *testing.T) {
 			}
 			if v[1] != input[1] {
 				t.Errorf("unexpected value: wanted %d ; got %d", input[1], v[1])
-			}
-			if v[2] != input[2] {
-				t.Errorf("unexpected value: wanted %d ; got %d", input[2], v[2])
 			}
 		})
 	})
