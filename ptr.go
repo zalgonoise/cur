@@ -7,7 +7,7 @@ type ptrCursor[T any] struct {
 
 // NewCursor returns a Cursor for the input slice, or nil if the slice is empty
 func Ptr[T any](slice *[]T) Cursor[T] {
-	if slice == nil || len(*slice) == 0 {
+	if slice == nil {
 		return nil
 	}
 	return &ptrCursor[T]{
@@ -27,7 +27,7 @@ func (c *ptrCursor[T]) Cur() T {
 
 // Pos returns the current position in the cursor
 func (c *ptrCursor[T]) Pos() int {
-	if c.slice == nil || len(*c.slice) == 0 {
+	if c.slice == nil || c.idx >= len(*c.slice) {
 		return -1
 	}
 	return c.idx

@@ -28,6 +28,13 @@ func TestPointer(t *testing.T) {
 		if c == nil {
 			t.Errorf("expected cursor not to be nil")
 		}
+		t.Run("Initialized", func(t *testing.T) {
+			var initialized = &[]int{}
+			n := Ptr(initialized)
+			if n == nil {
+				t.Errorf("expected cursor not to be nil")
+			}
+		})
 		t.Run("Fail", func(t *testing.T) {
 			var zero *[]int
 			n := Ptr(zero)
