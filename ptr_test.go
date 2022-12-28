@@ -60,8 +60,8 @@ func TestPointer(t *testing.T) {
 
 	t.Run("Next", func(t *testing.T) {
 		v := c.Next()
-		if v != input[1] {
-			t.Errorf("unexpected value: wanted %d ; got %d", input[1], v)
+		if v != input[0] {
+			t.Errorf("unexpected value: wanted %d ; got %d", input[0], v)
 		}
 		t.Run("Fail", func(t *testing.T) {
 			unset()

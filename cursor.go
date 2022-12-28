@@ -64,7 +64,7 @@ type Cursor[T any] interface {
 
 type cursor[T any] struct {
 	slice []T
-	idx   int
+	pos   int
 }
 
 // New returns a Cursor for the input slice, or nil if the slice is empty
@@ -77,14 +77,21 @@ func New[T any](slice []T) Cursor[T] {
 	}
 }
 
-// Cur returns the same indexed item in the slice
+// Cur returns the item in the current position
 func (c *cursor[T]) Cur() T {
-	return c.slice[c.idx]
+	if c.pos >= len(c.slice) {
+		var eof T
+		return eof
+	}
+	return c.slice[c.pos]
 }
 
 // Pos returns the current position in the cursor
 func (c *cursor[T]) Pos() int {
-	return c.idx
+	if c.pos >= len(c.slice) {
+		return -1
+	}
+	return c.pos
 }
 
 // Len returns the total size of the underlying slice
@@ -92,48 +99,48 @@ func (c *cursor[T]) Len() int {
 	return len(c.slice)
 }
 
-// Next returns the next item in the slice, or the zero-value for T as EOF
+// Next advances the cursor, returning the next item in the slice
 func (c *cursor[T]) Next() T {
-	if c.idx+1 >= len(c.slice) {
+	if c.pos >= len(c.slice) {
 		var eof T
 		return eof
 	}
-	c.idx++
-	return c.slice[c.idx]
+	c.pos++
+	return c.slice[c.pos-1]
 }
 
 // Prev returns the previous item in the slice, or the zero-value for T as EOF if
 // index is / would be less than zero
 func (c *cursor[T]) Prev() T {
-	if c.idx <= 0 {
+	if c.pos <= 0 {
 		var eof T
 		return eof
 	}
-	c.idx--
-	return c.slice[c.idx]
+	c.pos--
+	return c.slice[c.pos]
 }
 
 // Peek returns the next indexed item without advancing the cursor
 //
 // If the next token overflows the slice, returns the zero-value for T as EOF
 func (c *cursor[T]) Peek() T {
-	if c.idx+1 >= len(c.slice) {
+	if c.pos+1 >= len(c.slice) {
 		var eof T
 		return eof
 	}
-	return c.slice[c.idx+1]
+	return c.slice[c.pos+1]
 }
 
 // Head returns to the beginning of the slice
 func (c *cursor[T]) Head() T {
-	c.idx = 0
-	return c.slice[c.idx]
+	c.pos = 0
+	return c.Next()
 }
 
 // Tail jumps to the end of the slice
 func (c *cursor[T]) Tail() T {
-	c.idx = len(c.slice) - 1
-	return c.slice[c.idx]
+	c.pos = len(c.slice)
+	return c.Prev()
 }
 
 // Idx jumps to the specific index `idx` in the slice
@@ -145,8 +152,8 @@ func (c *cursor[T]) Idx(idx int) T {
 		var eof T
 		return eof
 	}
-	c.idx = idx
-	return c.slice[c.idx]
+	c.pos = idx
+	return c.slice[idx]
 }
 
 // Offset advances or rewinds `amount` steps in the slice, be it a positive or negative
@@ -155,12 +162,12 @@ func (c *cursor[T]) Idx(idx int) T {
 // If the result offset is below 0, the zero-value for T as EOF
 // If the result offset is greater than the size of the slice, the zero-value for T as EOF
 func (c *cursor[T]) Offset(amount int) T {
-	if c.idx+amount < 0 || c.idx+amount >= len(c.slice) {
+	if c.pos+amount < 0 || c.pos+amount >= len(c.slice) {
 		var eof T
 		return eof
 	}
-	c.idx += amount
-	return c.slice[c.idx]
+	c.pos += amount
+	return c.slice[c.pos]
 }
 
 // PeekIdx returns the next indexed item without advancing the cursor,
@@ -182,11 +189,11 @@ func (c *cursor[T]) PeekIdx(idx int) T {
 // If the result offset is below 0, the zero-value for T as EOF
 // If the result offset is greater than the size of the slice, the zero-value for T as EOF
 func (c *cursor[T]) PeekOffset(amount int) T {
-	if c.idx+amount < 0 || c.idx+amount >= len(c.slice)-1 {
+	if c.pos+amount < 0 || c.pos+amount >= len(c.slice)-1 {
 		var eof T
 		return eof
 	}
-	return c.slice[c.idx+amount]
+	return c.slice[c.pos+amount]
 }
 
 // Extract returns a slice from index `start` to index `end`

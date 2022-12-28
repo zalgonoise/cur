@@ -28,7 +28,7 @@ func TestCursor(t *testing.T) {
 	})
 	t.Run("Next", func(t *testing.T) {
 		v := c.Next()
-		if v != input[1] {
+		if v != input[0] {
 			t.Errorf("unexpected value: wanted %d ; got %d", input[1], v)
 		}
 	})
@@ -69,10 +69,10 @@ func TestCursor(t *testing.T) {
 			v := c.Peek()
 			cur := c.Cur()
 			if v != eof {
-				t.Errorf("unexpected value: wanted %d ; got %d", input[10], v)
+				t.Errorf("unexpected value: wanted %d ; got %d", eof, v)
 			}
 			if cur != input[10] {
-				t.Errorf("unexpected value: wanted %d ; got %d", input[10], v)
+				t.Errorf("unexpected value: wanted %d ; got %d", input[10], cur)
 			}
 		})
 		c.Idx(2)
