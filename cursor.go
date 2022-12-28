@@ -67,8 +67,8 @@ type cursor[T any] struct {
 	idx   int
 }
 
-// NewCursor returns a Cursor for the input slice, or nil if the slice is empty
-func NewCursor[T any](slice []T) Cursor[T] {
+// New returns a Cursor for the input slice, or nil if the slice is empty
+func New[T any](slice []T) Cursor[T] {
 	if len(slice) == 0 {
 		return nil
 	}
@@ -141,11 +141,7 @@ func (c *cursor[T]) Tail() T {
 // If the input index is below 0, the zero-value for T as EOF
 // If the input index is greater than the size of the slice, the zero-value for T as EOF
 func (c *cursor[T]) Idx(idx int) T {
-	if idx < 0 {
-		var eof T
-		return eof
-	}
-	if idx >= len(c.slice) {
+	if idx < 0 || idx >= len(c.slice) {
 		var eof T
 		return eof
 	}
@@ -159,11 +155,7 @@ func (c *cursor[T]) Idx(idx int) T {
 // If the result offset is below 0, the zero-value for T as EOF
 // If the result offset is greater than the size of the slice, the zero-value for T as EOF
 func (c *cursor[T]) Offset(amount int) T {
-	if c.idx+amount < 0 {
-		var eof T
-		return eof
-	}
-	if c.idx+amount >= len(c.slice) {
+	if c.idx+amount < 0 || c.idx+amount >= len(c.slice) {
 		var eof T
 		return eof
 	}
@@ -177,11 +169,7 @@ func (c *cursor[T]) Offset(amount int) T {
 // If the input index is below 0, the zero-value for T as EOF
 // If the input index is greater than the size of the slice, the zero-value for T as EOF
 func (c *cursor[T]) PeekIdx(idx int) T {
-	if idx < 0 {
-		var eof T
-		return eof
-	}
-	if idx >= len(c.slice)-1 {
+	if idx < 0 || idx >= len(c.slice)-1 {
 		var eof T
 		return eof
 	}
@@ -194,11 +182,7 @@ func (c *cursor[T]) PeekIdx(idx int) T {
 // If the result offset is below 0, the zero-value for T as EOF
 // If the result offset is greater than the size of the slice, the zero-value for T as EOF
 func (c *cursor[T]) PeekOffset(amount int) T {
-	if c.idx+amount < 0 {
-		var eof T
-		return eof
-	}
-	if c.idx+amount >= len(c.slice)-1 {
+	if c.idx+amount < 0 || c.idx+amount >= len(c.slice)-1 {
 		var eof T
 		return eof
 	}
@@ -212,6 +196,9 @@ func (c *cursor[T]) Extract(start, end int) []T {
 	}
 	if end > len(c.slice) {
 		end = len(c.slice)
+	}
+	for start > end {
+		start--
 	}
 
 	return c.slice[start:end]

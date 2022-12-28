@@ -10,12 +10,12 @@ var input = []int{
 func TestCursor(t *testing.T) {
 	var c Cursor[int]
 	t.Run("New", func(t *testing.T) {
-		c = NewCursor(input)
+		c = New(input)
 		if c == nil {
 			t.Errorf("expected cursor not to be nil")
 		}
 		t.Run("Fail", func(t *testing.T) {
-			n := NewCursor([]int{})
+			n := New([]int{})
 			if n != nil {
 				t.Errorf("expected cursor to be nil")
 			}
