@@ -1,4 +1,4 @@
-package codegraph
+package cur
 
 import "testing"
 

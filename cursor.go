@@ -1,4 +1,4 @@
-package codegraph
+package cur
 
 // Cursor navigates through a slice in a controlled manner, allowing the
 // caller to move forward, backwards, and jump around the slice as they need
